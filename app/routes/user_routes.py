@@ -7,38 +7,38 @@ bp = Blueprint("users_blueprint", __name__, url_prefix="/users")
 
 @bp.post("/")
 def create_user():
-  request_body = request.get_json()
+    request_body = request.get_json()
 
-  return create_model(User, request_body)
+    return create_model(User, request_body)
 
 @bp.get("/")
 def get_all_users():
-  return get_models_with_filters(User, request.args)
+    return get_models_with_filters(User, request.args)
 
 @bp.get("/<id>")
 def get_single_user(id):
-  user = validate_model(User, id)
+    user = validate_model(User, id)
 
-  return user.to_dict()
+    return user.to_dict()
 
 @bp.get("/email")
 def get_single_user_by_email():
-  email = request.args.get("email")
+    email = request.args.get("email")
 
-  return get_user_by_email(email)
+    return get_user_by_email(email)
 
 @bp.put("/<id>")
 def update_user(id):
-  user = validate_model(User, id)
-  request_body = request.get_json()
+    user = validate_model(User, id)
+    request_body = request.get_json()
 
-  return update_model(user, request_body)
+    return update_model(user, request_body)
 
 @bp.delete("/<id>")
 def delete_user(id):
-  user = validate_model(User, id)
+    user = validate_model(User, id)
 
-  db.session.delete(user)
-  db.session.commit()
+    db.session.delete(user)
+    db.session.commit()
 
-  return Response(status=204, mimetype="application/json")
+    return Response(status=204, mimetype="application/json")

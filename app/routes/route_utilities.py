@@ -32,12 +32,12 @@ def get_user_by_email(email):
     return user.to_dict()
 
 def validate_by_email(cls, email):
-  user = db.select(cls).where(cls.email == email)
+    user = db.select(cls).where(cls.email == email)
 
-  if user:
-      return user 
-  
-  abort(make_response({"message": f"Could not find account"}))
+    if user:
+        return user 
+    
+    abort(make_response({"message": f"Could not find account"}))
     
 
 def create_model(cls, model_data):
@@ -50,9 +50,9 @@ def create_model(cls, model_data):
         db.session.rollback()
 
         if isinstance(e, KeyError):
-          response = {"message": f"Invalid: Missing key ({e.args[0]})"}, 400
+            response = {"message": f"Invalid: Missing key ({e.args[0]})"}, 400
         else: 
-          response = {"message": f"An account with email ({model_data['email']}) already exists."}, 409
+            response = {"message": f"An account with email ({model_data['email']}) already exists."}, 409
         
         abort(make_response(response))
 
