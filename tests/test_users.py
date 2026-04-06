@@ -5,6 +5,7 @@ from app.models.user import User
 # POST /users/
 # ──────────────────────────────────────────────
 
+
 def test_create_user(client):
     response = client.post("/users/", json={
         "first_name": "Ada",
@@ -99,6 +100,7 @@ def test_get_single_user_by_email(client, one_user):
     assert body["id"] == one_user.id
     assert body["email"] == "ada@example.com"
 
+
 def test_get_single_user_by_email_not_found_returns_404(client):
     response = client.get("/users/email?email=adminnotexist@example.com")
     assert response.status_code == 404
@@ -106,6 +108,7 @@ def test_get_single_user_by_email_not_found_returns_404(client):
 # ──────────────────────────────────────────────
 # GET /users/<id>
 # ──────────────────────────────────────────────
+
 
 def test_get_single_user(client, one_user):
     response = client.get(f"/users/{one_user.id}")
@@ -126,18 +129,20 @@ def test_get_single_user_invalid_id_returns_400(client):
     assert response.status_code == 400
     assert "invalid" in response.get_json()["message"]
 
-
 # ──────────────────────────────────────────────
 # PUT /users/<id>
 # ──────────────────────────────────────────────
 
+
 def test_update_user(client, one_user):
-    response = client.put(f"/users/{one_user.id}", json={"first_name": "Augusta"})
+    response = client.put(
+        f"/users/{one_user.id}", json={"first_name": "Augusta"})
     assert response.status_code == 204
 
 
 def test_update_user_ignores_unknown_fields(client, one_user):
-    response = client.put(f"/users/{one_user.id}", json={"unknown_field": "value"})
+    response = client.put(
+        f"/users/{one_user.id}", json={"unknown_field": "value"})
     assert response.status_code == 204
 
 
@@ -152,10 +157,10 @@ def test_update_user_invalid_id_returns_400(client):
     assert response.status_code == 400
     assert "invalid" in response.get_json()["message"]
 
-
 # ──────────────────────────────────────────────
 # DELETE /users/<id>
 # ──────────────────────────────────────────────
+
 
 def test_delete_user(client, one_user):
     user_id = one_user.id

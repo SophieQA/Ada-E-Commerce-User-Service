@@ -8,6 +8,7 @@ from flask.signals import request_finished
 
 load_dotenv()
 
+
 @pytest.fixture
 def app():
     test_config = {
@@ -36,7 +37,8 @@ def client(app):
 
 @pytest.fixture
 def one_user(app):
-    user = User(first_name="Ada", last_name="Lovelace", email="ada@example.com")
+    user = User(first_name="Ada", last_name="Lovelace",
+                email="ada@example.com")
     db.session.add(user)
     db.session.commit()
     return user

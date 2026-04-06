@@ -2,6 +2,7 @@ from ..db import db
 from ..models.user import User
 from flask import abort, make_response, Response
 
+
 def validate_model(cls, id):
     try:
         id = int(id)
@@ -12,11 +13,12 @@ def validate_model(cls, id):
     query = db.select(cls).where(cls.id == id)
     model = db.session.scalar(query)
 
-    if not model:    
+    if not model:
         not_found = {"message": f"{cls.__name__} with id ({id}) not found."}
         abort(make_response(not_found, 404))
 
     return model
+
 
 def get_user_by_email(email):
     try:
@@ -25,57 +27,61 @@ def get_user_by_email(email):
         )
     except:
         abort(make_response({"message": "Somethting went wrong"}, 500))
-    
+
     if not user:
         abort(make_response({"message": "Could not find account."}, 404))
 
     return user.to_dict()
 
+
 def validate_by_email(cls, email):
     user = db.select(cls).where(cls.email == email)
 
     if user:
-        return user 
-    
+        return user
+
     abort(make_response({"message": f"Could not find account"}))
-    
+
 
 def create_model(cls, model_data):
-    
+
     try:
         new_model = cls.from_dict(model_data)
         db.session.add(new_model)
-        db.session.commit()  
+        db.session.commit()
     except Exception as e:
         db.session.rollback()
 
         if isinstance(e, KeyError):
             response = {"message": f"Invalid: Missing key ({e.args[0]})"}, 400
-        else: 
-            response = {"message": f"An account with email ({model_data['email']}) already exists."}, 409
-        
-        abort(make_response(response))
+        else:
+            response = {
+                "message": f"An account with email ({model_data['email']}) already exists."}, 409
 
+        abort(make_response(response))
 
     return new_model.to_dict(), 201
 
+
 def get_models_with_filters(cls, filters=None):
     query = db.select(cls)
-    
+
     if filters:
         for attribute, value in filters.items():
             if hasattr(cls, attribute):
-                query = query.where(getattr(cls, attribute).ilike(f"%{value}%"))
+                query = query.where(
+                    getattr(cls, attribute).ilike(f"%{value}%"))
 
     models = db.session.scalars(query.order_by(cls.id))
     models_response = [model.to_dict() for model in models]
     return models_response
 
+
 def update_model(obj, data):
     for attr, value in data.items():
         if hasattr(obj, attr):
             setattr(obj, attr, value)
-    
+
     db.session.commit()
 
     return Response(status=204, mimetype="application/json")
