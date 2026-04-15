@@ -2,8 +2,7 @@
 
 ## Description
 
-The User Service is one of 3 microservices for the Ada Developers Academy Cloud Curriculum e-commerce application. It handles the creation and management of user accounts in the e-commerce system. It also runs an SQS consumer that listens for `order.placed` events and sends order confirmation notifications to the corresponding user.
-
+The User Service is one of 3 microservices for the Ada Developers Academy Cloud Curriculum e-commerce application. It handles the creation and management of user accounts in the e-commerce system.
 ### Data Models
 
 - **User** — represents a customer account, containing `first_name`, `last_name`, `email`, and `is_admin`
