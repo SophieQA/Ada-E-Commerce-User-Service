@@ -1,21 +1,28 @@
-from .db import db, migrate
 from flask import Flask
+from .db import db, migrate
+from .models.user import User
+from .routes.user_routes import bp as users_bp 
 
 import os
 
-def create_app():
-  app = Flask(__name__)
+def create_app(config=None):
+    app = Flask(__name__)
 
-  app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-  app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
 
-  db.init_app(app)
-  migrate.init_app(app, db)
+    if config:
+        app.config.update(config)
 
-  @app.get('/')
-  def index():
-    return {
-      "status": "ok"
-    }
+    db.init_app(app)
+    migrate.init_app(app, db)
 
-  return app
+    app.register_blueprint(users_bp)
+
+    @app.get('/')
+    def index():
+        return {
+        "status": "ok"
+        }
+
+    return app
