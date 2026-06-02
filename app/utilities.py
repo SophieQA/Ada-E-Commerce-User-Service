@@ -72,3 +72,23 @@ def update_model(obj, data):
             setattr(obj, attr, value)
 
     db.session.commit()
+
+def send_order_confirmation(user, order):
+    items_breakdown = "\n".join([
+        f"  - {item['product_name']} x{item['quantity']} @ ${item['product_price']:.2f}"
+        for item in order["items"]
+    ])
+
+    total = sum(
+        item["product_price"] * item["quantity"]
+        for item in order["items"]
+    )
+
+    print(
+        f"\n--- Order Confirmation ---\n"
+        f"To: {user.first_name} {user.last_name} ({user.email})\n"
+        f"Order #{order['id']}\n"
+        f"{items_breakdown}\n"
+        f"Total: ${total:.2f}\n"
+        f"--------------------------"
+    )
