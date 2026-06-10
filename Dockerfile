@@ -18,6 +18,12 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+# The app entrypoint uses /bin/bash, which is not guaranteed to exist in the
+# slim Python image.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends bash \
+    && rm -rf /var/lib/apt/lists/*
+
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
 ARG UID=10001
